@@ -196,6 +196,8 @@ else:
     }
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+#custon model user 
+AUTH_USER_MODEL = "User.CustomUser"
 
 
 # DEBUG TOOLBAR
