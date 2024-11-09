@@ -5,6 +5,7 @@ from django.core.mail import send_mail
 from rest_framework_simplejwt.tokens import RefreshToken
 from apps.authentication.v1.serializers.register import RegisterSerializer, ConfirmEmailSerializer
 class RegisterView(GenericAPIView):
+    serializer_class = RegisterSerializer
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
@@ -18,6 +19,7 @@ class RegisterView(GenericAPIView):
                 'no-reply@example.com',
                 [user.email]
             )
+            print(token) # mode debug
             return Response({'message': 'Registration successful! Please check your email to confirm your account.'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -25,6 +27,7 @@ class RegisterView(GenericAPIView):
 
 
 class ConfirmEmailView(GenericAPIView):
+    serializer_class = ConfirmEmailSerializer
     def post(self, request):
         serializer = ConfirmEmailSerializer(data=request.data)
         if serializer.is_valid():
