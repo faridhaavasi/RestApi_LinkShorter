@@ -53,9 +53,9 @@ INSTALLED_APPS = [
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     # Uncomment this line to enable JWT authentication
-    # 'DEFAULT_AUTHENTICATION_CLASSES': (
-    #     'rest_framework_simplejwt.authentication.JWTAuthentication',
-    # )
+     'DEFAULT_AUTHENTICATION_CLASSES': (
+         'rest_framework_simplejwt.authentication.JWTAuthentication',
+     )
 }
 
 SPECTACULAR_SETTINGS = {
@@ -154,6 +154,17 @@ USE_I18N = True
 USE_TZ = True
 # auth 
 AUTH_USER_MODEL = "users.CustomUser"
+
+
+# smtp4dev 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp4dev'
+EMAIL_PORT = 25
+EMAIL_USE_TLS = False
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+DEFAULT_FROM_EMAIL = 'no-reply@example.com'
+
 
 
 # Static files (CSS, JavaScript, Images)
