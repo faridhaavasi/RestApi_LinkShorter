@@ -23,22 +23,25 @@ services:
 
   smtp:
     image: rnwood/smtp4dev
+    container_name: smtp4dev
     ports:
-      - "8025:80"
-      - "2525:25"
-    restart: always
-    networks:
-      - app_network
+      - "3000:80"
+      - "25:25"
+    restart: always  
 
   backend:
     container_name: backend
     build: .
+    environment:
+      - EMAIL_HOST=smtp4dev
+      - EMAIL_PORT=25
     env_file:
       - .env
     command: ["/wait-for-it.sh", "db:5432", "--", "python", "manage.py", "runserver", "0.0.0.0:8000"]
     depends_on:
       - db
       - redis
+      - smtp
     ports:
       - "8000:8000"
     restart: always
