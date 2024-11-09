@@ -156,15 +156,6 @@ USE_TZ = True
 # auth 
 AUTH_USER_MODEL = "users.CustomUser"
 
-EMAIL_HOST = 'smtp'
-
-# smtp4dev 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp4dev'  # نام سرویس smtp4dev در فایل docker-compose
-EMAIL_PORT = 25
-EMAIL_USE_TLS = False
-EMAIL_HOST_USER = 'root'
-EMAIL_HOST_PASSWORD = 'root'
 
 
 
@@ -177,3 +168,10 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+#smtp4dev email setting
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp4dev'
+EMAIL_USE_TLS = False
+EMAIL_PORT = 25
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
