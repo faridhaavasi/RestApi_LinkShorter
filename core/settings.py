@@ -41,6 +41,7 @@ LOCAL_APPS = [
     'apps.users.apps.UsersConfig',
     'apps.authentication.apps.AuthenticationConfig',
     'apps.shorter.apps.ShorterConfig',
+    'apps.accounts.apps.AccountsConfig',
 
 ]
 
