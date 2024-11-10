@@ -1,7 +1,11 @@
 from django.db import models
 import string, random
+from django.contrib.auth import get_user_model
+
+user = get_user_model()
 
 class Link(models.Model):
+    user = models.ForeignKey(user, on_delete=models.CASCADE, related_name='links')
     original_url = models.URLField(max_length=500)
     short_code = models.CharField(max_length=10, unique=True, blank=True)
 
