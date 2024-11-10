@@ -62,7 +62,7 @@ services:
     depends_on:
       - db
       - redis
-      - smtp
+      
     ports:
       - "8000:8000"
     restart: always
@@ -74,8 +74,9 @@ services:
 
 volumes:
   postgres_data:
+  smtp4dev-data:
+
 
 
 networks:
   app_network:
-  smtp4dev-data:

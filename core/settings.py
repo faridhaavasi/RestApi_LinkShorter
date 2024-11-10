@@ -33,6 +33,8 @@ ALLOWED_HOSTS = []
 THIRD_PARTY_APPS = [
     'rest_framework',
     'drf_spectacular',
+    'rest_framework_simplejwt',
+
 ]
 
 LOCAL_APPS = [
@@ -168,7 +170,7 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-#smtp4dev email setting
+# smtp4dev email setting
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp4dev'
 EMAIL_USE_TLS = False
