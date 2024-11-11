@@ -2,7 +2,7 @@ from rest_framework.generics import RetrieveAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from apps.accounts.v1.serializers.accounts import AccountSerializer, AccountUpdateSerializer
 from apps.accounts.models import Account
-from apps.accounts.permisions import IsOwnerAccount
+from apps.accounts.permissions import IsOwnerAccount
 class ProfileView(RetrieveAPIView):
     queryset = Account.objects.all()
     serializer_class = AccountSerializer
