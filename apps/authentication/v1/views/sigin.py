@@ -1,12 +1,19 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.generics import GenericAPIView
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.core.mail import EmailMessage
+
 from rest_framework_simplejwt.tokens import RefreshToken
-from apps.authentication.v1.serializers.register import RegisterSerializer, ConfirmEmailSerializer
+from rest_framework_simplejwt.tokens import AccessToken
+from apps.authentication.v1.serializers.register import RegisterSerializer
 from apps.authentication.utils import EmailSendThread
+from django.contrib.auth import get_user_model
 from django.conf import settings
 
+
+User = get_user_model()
 
 class RegisterView(GenericAPIView):
     serializer_class = RegisterSerializer
@@ -19,12 +26,12 @@ class RegisterView(GenericAPIView):
 
             # Generate confirmation URL
             token = RefreshToken.for_user(user).access_token
-            confirmation_url = f"http://localhost:8000/confirm-email/{token}/"
+            
             
             # Prepare email
             email_obj = EmailMessage(
                 subject='Confirm your email',
-                body=f'Please click the link to confirm your email: {confirmation_url}',
+                body=str(token),
                 from_email=settings.EMAIL_HOST_USER,  # Ensure EMAIL_HOST_USER is set in your settings
                 to=[user.email]
             )
@@ -38,13 +45,18 @@ class RegisterView(GenericAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ConfirmEmailView(GenericAPIView):
-    serializer_class = ConfirmEmailSerializer
+class ConfirmEmailView(APIView):
     
-    def post(self, request):
-        serializer = ConfirmEmailSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({'message': 'Email confirmed successfully!'}, status=status.HTTP_200_OK)
+    def get(self, request, token):
+        token_obj = AccessToken(token)
+        user_id = token_obj['user_id']
+        user = get_object_or_404(User, user_id)
+        if user.is_verify:
+            return Response({'message': 'User email is already verified.'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+        user.is_verify = True
+        user.is_active = True
+        user.save()
+        return Response({'message': 'verifyed'}, status=status.HTTP_202_ACCEPTED)    
         
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
