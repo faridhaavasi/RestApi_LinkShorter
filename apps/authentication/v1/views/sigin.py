@@ -3,11 +3,9 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny
 from django.core.mail import EmailMessage
-
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.tokens import AccessToken
+from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 from apps.authentication.v1.serializers.register import RegisterSerializer, PasswordResetSerializer
 from apps.authentication.utils import EmailSendThread
 from django.contrib.auth import get_user_model
@@ -71,10 +69,10 @@ class ConfirmEmailView(APIView):
 
 
 class RequestPasswordResetView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
-    def get(self, request):
-        email = request.user.email
+    def post(self, request):
+        email = request.data.get('email')
         if not email:
             return Response({'message': 'Email is required.'}, status=status.HTTP_400_BAD_REQUEST)
         
@@ -84,7 +82,7 @@ class RequestPasswordResetView(APIView):
                 return Response({'message': 'User account is not active.'}, status=status.HTTP_400_BAD_REQUEST)
             
             # Generate reset token
-            token = RefreshToken.for_user(user).access_token
+            token = AccessToken.for_user(user)
             reset_url = f"{settings.FRONTEND_URL}/reset-password/{str(token)}"
             
             # Send email
@@ -102,17 +100,21 @@ class RequestPasswordResetView(APIView):
             return Response({'message': 'No user found with this email.'}, status=status.HTTP_404_NOT_FOUND)
 
 
+    
+
 
 
 
 
 class ResetPasswordView(APIView):
+    serializer_class = [PasswordResetSerializer]
     
     def post(self, request, token):
         serializer = PasswordResetSerializer(data=request.data)
         if serializer.is_valid():
             try:
-                token_obj = RefreshToken(token)
+                # Decode token and get user
+                token_obj = AccessToken(token)
                 user_id = token_obj['user_id']
                 user = User.objects.get(id=user_id)
                 
