@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny
 from django.core.mail import EmailMessage
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
-from apps.authentication.v1.serializers.register import RegisterSerializer, PasswordResetSerializer
+from apps.authentication.v1.serializers.register import RegisterSerializer, PasswordResettSerializer
 from apps.authentication.utils import EmailSendThread
 from django.contrib.auth import get_user_model
 from django.conf import settings
@@ -18,7 +18,7 @@ class RegisterView(GenericAPIView):
     serializer_class = RegisterSerializer
     
     def post(self, request):
-        serializer = RegisterSerializer(data=request.data)
+        serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
             email = serializer.validated_data['email']
@@ -72,7 +72,7 @@ class RequestPasswordResetView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        email = request.data.get('email')
+        email = request.user.email
         if not email:
             return Response({'message': 'Email is required.'}, status=status.HTTP_400_BAD_REQUEST)
         
@@ -83,7 +83,7 @@ class RequestPasswordResetView(APIView):
             
             # Generate reset token
             token = AccessToken.for_user(user)
-            reset_url = f"{settings.FRONTEND_URL}/reset-password/{str(token)}"
+            reset_url = f"/reset-password/:{str(token)}"
             
             # Send email
             email_obj = EmailMessage(
@@ -100,17 +100,13 @@ class RequestPasswordResetView(APIView):
             return Response({'message': 'No user found with this email.'}, status=status.HTTP_404_NOT_FOUND)
 
 
-    
-
-
-
 
 
 class ResetPasswordView(APIView):
-    serializer_class = [PasswordResetSerializer]
+    serializer_class = PasswordResettSerializer
     
-    def post(self, request, token):
-        serializer = PasswordResetSerializer(data=request.data)
+    def put(self, request, token):
+        serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             try:
                 # Decode token and get user

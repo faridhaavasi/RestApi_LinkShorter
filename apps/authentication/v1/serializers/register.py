@@ -64,7 +64,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 
-class PasswordResetSerializer(serializers.Serializer):
+class PasswordResettSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True, required=True)
     confirm_password = serializers.CharField(write_only=True, required=True)
 
