@@ -3,11 +3,12 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from django.core.mail import EmailMessage
 
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.tokens import AccessToken
-from apps.authentication.v1.serializers.register import RegisterSerializer
+from apps.authentication.v1.serializers.register import RegisterSerializer, PasswordResetSerializer
 from apps.authentication.utils import EmailSendThread
 from django.contrib.auth import get_user_model
 from django.conf import settings
@@ -63,3 +64,65 @@ class ConfirmEmailView(APIView):
         
         except Exception as e:
             return Response({'message': 'Invalid or expired token.'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+
+class RequestPasswordResetView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        email = request.user.email
+        if not email:
+            return Response({'message': 'Email is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            user = User.objects.get(email=email)
+            if not user.is_active:
+                return Response({'message': 'User account is not active.'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Generate reset token
+            token = RefreshToken.for_user(user).access_token
+            reset_url = f"{settings.FRONTEND_URL}/reset-password/{str(token)}"
+            
+            # Send email
+            email_obj = EmailMessage(
+                subject="Password Reset Request",
+                body=f"Click the link to reset your password: {reset_url}",
+                from_email=settings.EMAIL_HOST_USER,
+                to=[email]
+            )
+            EmailSendThread(email_obj=email_obj).start()
+            
+            return Response({'message': 'Password reset email sent.'}, status=status.HTTP_200_OK)
+        
+        except User.DoesNotExist:
+            return Response({'message': 'No user found with this email.'}, status=status.HTTP_404_NOT_FOUND)
+
+
+
+
+
+
+class ResetPasswordView(APIView):
+    
+    def post(self, request, token):
+        serializer = PasswordResetSerializer(data=request.data)
+        if serializer.is_valid():
+            try:
+                token_obj = RefreshToken(token)
+                user_id = token_obj['user_id']
+                user = User.objects.get(id=user_id)
+                
+                # Update password
+                user.set_password(serializer.validated_data['password'])
+                user.save()
+                
+                return Response({'message': 'Password has been reset successfully.'}, status=status.HTTP_200_OK)
+            
+            except Exception:
+                return Response({'message': 'Invalid or expired token.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
