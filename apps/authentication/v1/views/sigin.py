@@ -48,15 +48,18 @@ class RegisterView(GenericAPIView):
 class ConfirmEmailView(APIView):
     
     def get(self, request, token):
-        token_obj = AccessToken(token)
-        user_id = token_obj['user_id']
-        user = get_object_or_404(User, user_id)
-        if user.is_verify:
-            return Response({'message': 'User email is already verified.'}, status=status.HTTP_406_NOT_ACCEPTABLE)
-        user.is_verify = True
-        user.is_active = True
-        user.save()
-        return Response({'message': 'verifyed'}, status=status.HTTP_202_ACCEPTED)    
+        try:
+            token_obj = AccessToken(token)
+            user_id = token_obj['user_id']
+            user = get_object_or_404(User, id=user_id)
+            
+            if user.is_verify:
+                return Response({'message': 'User email is already verified.'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+            
+            user.is_verify = True
+            user.is_active = True
+            user.save()
+            return Response({'message': 'Email verified successfully.'}, status=status.HTTP_202_ACCEPTED)
         
-
-
+        except Exception as e:
+            return Response({'message': 'Invalid or expired token.'}, status=status.HTTP_400_BAD_REQUEST)
