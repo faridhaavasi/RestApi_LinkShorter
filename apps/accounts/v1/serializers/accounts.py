@@ -18,4 +18,4 @@ class AccountSerializer(serializers.ModelSerializer):
 class AccountUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
-        fields = ['bio']
+        fields = ['bio', 'id_user']
