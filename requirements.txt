@@ -6,3 +6,4 @@ drf-spectacular
 djangorestframework-simplejwt
 markdown       
 django-filter
+pytest-django
