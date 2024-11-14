@@ -15,11 +15,9 @@ class Link(models.Model):
         super().save(*args, **kwargs)
 
     def generate_short_code(self):
-        length = 6  
-        while True:
-            code = ''.join(random.choices(string.ascii_letters + string.digits, k=length))
-            if not Link.objects.filter(short_code=code).exists():
-                return code
-
+        length = 6
+        characters = string.ascii_letters + string.digits
+        return ''.join(random.choices(characters, k=length))
+      
     def __str__(self):
         return f"{self.original_url} -> {self.short_code}"
