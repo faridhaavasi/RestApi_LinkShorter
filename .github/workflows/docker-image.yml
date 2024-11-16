@@ -22,17 +22,17 @@ jobs:
       # Install Docker Compose
       - name: Install Docker Compose
         run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose-plugin
+          sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
 
       # Verify Docker Compose installation
       - name: Verify Docker Compose
-        run: docker compose version
+        run: docker-compose version
 
       # Build and run services
       - name: Build and start services
-        run: docker compose up -d --build
+        run: docker-compose up -d --build
 
       # Run tests inside the backend service
       - name: Run tests
-        run: docker compose exec backend pytest .
+        run: docker-compose exec backend pytest .
