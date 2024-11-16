@@ -11,22 +11,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # Clone the repository
+    # Step 1: Clone the repository
     - name: Checkout Code
       uses: actions/checkout@v4
 
-    # Build and start services
-    - name: Build and Start Docker Services
-      run: docker-compose up -d --build
+    # Step 2: Install Docker Compose
+    - name: Install Docker Compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker-compose-plugin
 
-    # Wait for backend and database to be ready
+    # Step 3: Build and Start Docker Services
+    - name: Build and Start Docker Services
+      run: docker compose up -d --build
+
+    # Step 4: Wait for Services to Start
     - name: Wait for Services to Start
       run: sleep 10
 
-    # Run Tests
+    # Step 5: Run Tests
     - name: Run Tests
-      run: docker-compose exec backend pytest .
+      run: docker compose exec backend pytest .
 
-    # Cleanup Docker containers
+    # Step 6: Cleanup Docker containers
     - name: Stop Docker Services
-      run: docker-compose down
+      run: docker compose down
