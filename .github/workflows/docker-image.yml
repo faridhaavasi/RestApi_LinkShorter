@@ -31,7 +31,7 @@ jobs:
 
       # Build and run services
       - name: Build and start services
-        run: docker-compose up --build -d
+        run: docker-compose up -d
 
       # Run tests inside the backend service
       - name: Run tests
