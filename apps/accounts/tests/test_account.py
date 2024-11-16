@@ -1,5 +1,6 @@
+from rest_framework.test import APIClient
+from django.urls import reverse
 import pytest
 
 class TestAccounts:
-    def test_first(self):
-        assert 1 == 1
+    pass
