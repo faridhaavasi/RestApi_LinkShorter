@@ -1,6 +1,6 @@
 from django.urls import path
 from apps.shorter.v1.views.links_views import CreateShortLinkView, ListLinksView, RedirectToOriginalView
-
+app_name = 'shprter'
 urlpatterns = [
     path('api/create/', CreateShortLinkView.as_view(), name='create_short_link'),
     path('api/my-links/', ListLinksView.as_view(), name='list_links'),

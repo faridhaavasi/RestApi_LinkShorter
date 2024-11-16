@@ -4,7 +4,7 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
-
+app_name = 'authentication'
 urlpatterns = [
     path('api/register/', RegisterView.as_view(), name='register'),
     path('api/confirm/<str:token>', ConfirmEmailView.as_view(), name='confirm-email'),
