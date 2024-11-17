@@ -8,3 +8,4 @@ markdown
 django-filter
 pytest-django
 pytest
+faker
