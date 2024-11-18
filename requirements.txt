@@ -9,3 +9,5 @@ django-filter
 pytest-django
 pytest
 faker
+django-cors-headers
+locust
