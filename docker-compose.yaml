@@ -82,7 +82,7 @@ services:
     volumes:
 
       - ./locust:/mnt/locust
-    command: -f /mnt/locust/locustfile.py --master -H http://backend:8089
+    command: -f /mnt/locust/locustfile.py --master -H http://backend:8000
   
   worker:
     image: locustio/locust
