@@ -10,3 +10,4 @@ pytest-django
 pytest
 faker
 django-cors-headers
+locust

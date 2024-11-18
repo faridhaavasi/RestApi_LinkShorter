@@ -1,4 +1,5 @@
 services:
+
   db:
     image: postgres:15
     environment:
@@ -73,22 +74,27 @@ services:
     volumes:
       - .:/app
   
-  locust:
-    image: locustio/locust
-    container_name: locust
-    environment:
-      TARGET_HOST: http://backend:8000
-    ports:
-      - "8089:8089"
-    volumes:
-      - ./locust:/locust  
-    command: >
-      locust -f /locust/locustfile.py --host=${TARGET_HOST}
-    
 
+  master:
+    image: locustio/locust
+    ports:
+     - "8089:8089"
+    volumes:
+
+      - ./locust:/mnt/locust
+    command: -f /mnt/locust/locustfile.py --master -H http://backend:8089
+  
+  worker:
+    image: locustio/locust
+    volumes:
+      - ./locust:/mnt/locust
+    command: -f /mnt/locust/locustfile.py  --worker --master-host master    
+
+ 
 volumes:
   postgres_data:
   smtp4dev-data:
+  
 
 
 
