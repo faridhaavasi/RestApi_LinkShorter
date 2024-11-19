@@ -191,6 +191,18 @@ EMAIL_HOST_PASSWORD = ''
 
 
 
+
+# set the celery broker url
+CELERY_BROKER_URL = 'redis://redis:6379/1'
+
+# set the celery result backend
+CELERY_RESULT_BACKEND = 'redis://redis:6379/1'
+
+# set the celery timezone
+CELERY_TIMEZONE = 'UTC'
+
+
+
 # CORS_ALLOWED_ORIGINS = [
 #     "https://example.com",
 #     "https://sub.example.com",

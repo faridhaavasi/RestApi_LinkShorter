@@ -11,3 +11,5 @@ pytest
 faker
 django-cors-headers
 locust
+celery
+redis
