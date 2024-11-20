@@ -76,6 +76,15 @@ services:
       - .:/app
   
 
+  worker_celery:
+    build: .
+    command: celey -A core worker --loglevel=info
+    depends_on:
+      - redis
+      - backend
+
+
+
   master:
     image: locustio/locust
     ports:
