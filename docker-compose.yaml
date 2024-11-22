@@ -59,6 +59,7 @@ services:
     environment:
       - EMAIL_HOST=smtp4dev
       - EMAIL_PORT=25
+      - SECRET_KEY=${SECRET_KEY}
     env_file:
       - .env
     command: ["/wait-for-it.sh", "db:5432", "--", "python", "manage.py", "runserver", "0.0.0.0:8000"]
@@ -78,12 +79,13 @@ services:
 
   worker_celery:
     build: .
-    command: celey -A core worker --loglevel=info
+    command: celery -A core worker --loglevel=info
     depends_on:
       - redis
       - backend
-
-
+    networks:
+      - app_network
+    
 
   master:
     image: locustio/locust
