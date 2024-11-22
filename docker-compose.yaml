@@ -85,7 +85,9 @@ services:
       - backend
     networks:
       - app_network
-    
+    volumes:
+      - .:/app
+
 
   master:
     image: locustio/locust
