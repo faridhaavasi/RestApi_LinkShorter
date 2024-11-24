@@ -4,7 +4,7 @@ djangorestframework
 django_redis
 drf-spectacular
 djangorestframework-simplejwt
-markdown       
+markdown
 django-filter
 pytest-django
 pytest
@@ -13,3 +13,4 @@ django-cors-headers
 locust
 celery
 redis
+gunicorn
