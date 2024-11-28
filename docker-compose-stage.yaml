@@ -4,6 +4,7 @@ services:
 
   db:
     image: postgres:15
+    container_name: postgres-db
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -17,8 +18,8 @@ services:
       - app_network
 
   redis:
-    container_name: redis
     image: redis:latest
+    container_name: redis-cache
     ports:
       - "6379:6379"
     restart: always
@@ -39,10 +40,9 @@ services:
       - media_volume:/home/app/media
     networks:
       - app_network
-
   backend:
-    container_name: backend
     build: .
+    container_name: django-backend
     environment:
       - EMAIL_HOST=smtp4dev
       - EMAIL_PORT=25
@@ -66,6 +66,7 @@ services:
 
   worker_celery:
     build: .
+    container_name: celery-worker
     command: celery -A core worker --loglevel=info
     depends_on:
       - redis
